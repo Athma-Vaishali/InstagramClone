@@ -38,11 +38,11 @@ import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ComposeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+///**
+// * A simple {@link Fragment} subclass.
+// * Use the {@link ComposeFragment#newInstance} factory method to
+// * create an instance of this fragment.
+// */
 public class ComposeFragment extends Fragment {
 
 //    // TODO: Rename parameter arguments, choose names that match
@@ -211,21 +211,4 @@ public class ComposeFragment extends Fragment {
         });
     }
 
-    private void queryPosts() {
-        ParseQuery<Post> query=ParseQuery.getQuery(Post.class);
-        query.include(Post.KEY_USER);
-        query.findInBackground(new FindCallback<Post>() {
-            @Override
-            public void done(List<Post> objects, ParseException e) {
-                if(e!=null){
-                    Log.e(TAG,"Issue with getting posts");
-                    return;
-                }
-                for(Post post:objects){
-                    Log.i(TAG,"POST: "+post.getDescription()+", USER: "+post.getUser().getUsername());
-                }
-            }
-        });
-
-    }
 }
