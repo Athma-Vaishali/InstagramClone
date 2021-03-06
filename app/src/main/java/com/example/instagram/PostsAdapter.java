@@ -10,6 +10,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.parse.ParseFile;
+
 import java.awt.font.TextAttribute;
 import java.util.List;
 
@@ -57,7 +60,12 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
         public void bind(Post post) {
             tvUsername.setText(post.getUser().getUsername());
             tvDescription.setText(post.getDescription());
-            
+            ParseFile image=post.getImage();
+            if(image!=null){
+                Glide.with(context).load(post.getImage().getUrl()).into(ivImage);
+            }
+
+
         }
     }
 

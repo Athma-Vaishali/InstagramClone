@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
@@ -13,11 +14,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.instagram.Post;
+import com.example.instagram.PostsAdapter;
 import com.example.instagram.R;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 
+import java.util.ArrayList;
 import java.util.List;
 
 ///**
@@ -38,36 +41,13 @@ public class PostFragment extends Fragment {
 
     public static final String TAG="PostFrag";
     private RecyclerView rvPosts;
+
+    private PostsAdapter adapter;
+    private List<Post> allPosts;
+
     public PostFragment() {
         // Required empty public constructor
     }
-//
-//    /**
-//     * Use this factory method to create a new instance of
-//     * this fragment using the provided parameters.
-//     *
-//     * @param param1 Parameter 1.
-//     * @param param2 Parameter 2.
-//     * @return A new instance of fragment PostFragment.
-//     */
-    // TODO: Rename and change types and number of parameters
-//    public static PostFragment newInstance(String param1, String param2) {
-//        PostFragment fragment = new PostFragment();
-//        Bundle args = new Bundle();
-//        args.putString(ARG_PARAM1, param1);
-//        args.putString(ARG_PARAM2, param2);
-//        fragment.setArguments(args);
-//        return fragment;
-//    }
-
-//    @Override
-//    public void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-////        if (getArguments() != null) {
-////            mParam1 = getArguments().getString(ARG_PARAM1);
-////            mParam2 = getArguments().getString(ARG_PARAM2);
-//        }
-//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -80,6 +60,10 @@ public class PostFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         rvPosts= view.findViewById(R.id.rvPosts);
+        allPosts=new ArrayList<>();
+        adapter=new PostsAdapter(getContext(),allPosts);
+        rvPosts.setAdapter(adapter);
+        rvPosts.setLayoutManager(new LinearLayoutManager(getContext()));
         queryPosts();
     }
 
@@ -96,6 +80,8 @@ public class PostFragment extends Fragment {
                 for(Post post:objects){
                     Log.i(TAG,"POST: "+post.getDescription()+", USER: "+post.getUser().getUsername());
                 }
+                allPosts.addAll(objects);
+                adapter.notifyDataSetChanged();
             }
         });
 
