@@ -1,16 +1,37 @@
 package com.example.instagram.fragment;
 
+import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.instagram.Post;
+import com.example.instagram.PostsAdapter;
+import com.example.instagram.R;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProfileFragment extends PostFragment {
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        rvPosts= view.findViewById(R.id.rvPosts);
+        allPosts=new ArrayList<>();
+        adapter=new PostsAdapter(getContext(),allPosts);
+        rvPosts.setAdapter(adapter);
+        rvPosts.setLayoutManager(new GridLayoutManager(getContext(),2));
+        queryPosts();
+    }
     @Override
     protected void queryPosts() {
         ParseQuery<Post> query=ParseQuery.getQuery(Post.class);

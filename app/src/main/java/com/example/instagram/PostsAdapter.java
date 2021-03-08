@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -47,6 +48,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
     class ViewHolder extends RecyclerView.ViewHolder{
 
         private TextView tvUsername;
+        private TextView tvTime;
         private ImageView ivImage;
         private TextView tvDescription;
         public ViewHolder(@NonNull View itemView){
@@ -54,19 +56,31 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             tvUsername=itemView.findViewById(R.id.tvUsername);
             ivImage=itemView.findViewById(R.id.ivImage);
             tvDescription=itemView.findViewById(R.id.tvDescription);
+            tvTime=itemView.findViewById(R.id.tvTime);
 
         }
 
         public void bind(Post post) {
             tvUsername.setText(post.getUser().getUsername());
             tvDescription.setText(post.getDescription());
+            tvTime.setText((CharSequence) post.getTime());
             ParseFile image=post.getImage();
             if(image!=null){
                 Glide.with(context).load(post.getImage().getUrl()).into(ivImage);
             }
-
-
         }
+
     }
 
+
+    public void clear() {
+        posts.clear();
+        notifyDataSetChanged();
+    }
+
+    // Add a list of items -- change to type used
+    public void addAll(List<Post> list) {
+        posts.addAll(list);
+        notifyDataSetChanged();
+    }
 }

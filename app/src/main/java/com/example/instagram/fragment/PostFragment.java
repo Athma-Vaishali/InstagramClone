@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -40,11 +41,12 @@ public class PostFragment extends Fragment {
 //    private String mParam2;
 
     public static final String TAG="PostFrag";
-    private RecyclerView rvPosts;
+    protected RecyclerView rvPosts;
 
     protected PostsAdapter adapter;
     protected List<Post> allPosts;
 
+    private SwipeRefreshLayout swipeContainer;
     public PostFragment() {
         // Required empty public constructor
     }
@@ -60,16 +62,28 @@ public class PostFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         rvPosts= view.findViewById(R.id.rvPosts);
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
         allPosts=new ArrayList<>();
         adapter=new PostsAdapter(getContext(),allPosts);
         rvPosts.setAdapter(adapter);
         rvPosts.setLayoutManager(new LinearLayoutManager(getContext()));
         queryPosts();
+
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                adapter.clear();
+                queryPosts();
+                swipeContainer.setRefreshing(false);
+            }
+        });
     }
+
 
     protected void queryPosts() {
         ParseQuery<Post> query=ParseQuery.getQuery(Post.class);
         query.include(Post.KEY_USER);
+        query.include(Post.KEY_CREATED_KEY);
         query.setLimit(20);
         query.addDescendingOrder(Post.KEY_CREATED_KEY);
         query.findInBackground(new FindCallback<Post>() {
